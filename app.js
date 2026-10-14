@@ -301,6 +301,15 @@
     catch (_) { note.textContent = 'คัดลอกลิงก์นี้ไปส่งต่อได้: ' + url; }
   };
 
+  /* ---------- lazy images: nudge them when close (some browsers never start them) ---------- */
+  const lio = new IntersectionObserver(es => es.forEach(e => {
+    if (e.isIntersecting) { e.target.loading = 'eager'; lio.unobserve(e.target); }
+  }), { rootMargin: '900px 0px' });
+  const watchLazy = () => $$('img[loading="lazy"]').forEach(i => lio.observe(i));
+  watchLazy();
+  new MutationObserver(watchLazy).observe(document.body, { childList: true, subtree: true });
+  addEventListener('load', () => setTimeout(() => $$('img[loading="lazy"]').forEach(i => { i.loading = 'eager'; }), 5000));
+
   /* ---------- page load moment ---------- */
   requestAnimationFrame(() => setTimeout(() => document.documentElement.classList.add('loaded'), 80));
 })();
