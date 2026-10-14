@@ -112,34 +112,52 @@
     </button>`).join('');
 
   /* ---------- river of photos ---------- */
-  /* spread picks across every album and across each album's full range, then mix */
-  function seeded(n) { let s = n; return () => (s = (s * 9301 + 49297) % 233280) / 233280; }
-  function riverPicks(lane) {
-    const per = 6, picks = [];
-    D.acts.forEach((a, k) => {
-      const p = a.photos, n = Math.min(per, p.length);
-      for (let j = 0; j < n; j++) {
-        const pos = Math.floor((j + (lane ? 0.5 : 0)) * p.length / n) % p.length;
-        picks.push([k, p[pos]]);
-      }
-    });
-    const rnd = seeded(lane ? 7 : 3);
-    for (let i = picks.length - 1; i > 0; i--) { const j = Math.floor(rnd() * (i + 1)); [picks[i], picks[j]] = [picks[j], picks[i]]; }
-    for (let i = 1; i < picks.length; i++) {           /* avoid two neighbours from the same album */
-      if (picks[i][0] === picks[i - 1][0]) {
-        const j = picks.findIndex((q, x) => x > i && q[0] !== picks[i][0] && (!picks[x + 1] || picks[x + 1][0] !== picks[i - 1][0]));
-        if (j > 0) [picks[i], picks[j]] = [picks[j], picks[i]];
-      }
-    }
-    return picks;
+  /* ---------- living photo wall ---------- */
+  (function wall() {
+    const grid = $('#wallGrid'); if (!grid) return;
+    const pool = D.wall.map(([f, k]) => ({ src: f, k }));
+    D.acts.forEach((a, k) => [a.hero, a.s1, a.s2].forEach(src => pool.push({ src, k })));
+    /* order the pool so neighbours come from different activities */
+    const by = D.acts.map(() => []); pool.forEach(p => by[p.k].push(p));
+    const mixed = []; let left = pool.length, r = 0;
+    while (left) { for (let k = 0; k < by.length; k++) { const p = by[(k + r) % by.length].shift(); if (p) { mixed.push(p); left--; } } r += 4; }
+    const shapes = ['b', '', '', 't', '', 'w', '', '', 'b', '', 't', '', 'w', '', '', '', 'b', '', 't x', 'w x', '', 'x'];
+    const N = shapes.length;
+    const shown = mixed.slice(0, N), queue = mixed.slice(N);
+    grid.innerHTML = shown.map((p, i) => `<button class="${shapes[i]}" style="--i:${i}" data-open="${p.k}" aria-label="เปิดอัลบั้ม${esc(D.acts[p.k].title)}"><img src="${p.src}" alt="" loading="lazy" decoding="async"><span class="tag">${esc(D.acts[p.k].tl)}</span></button>`).join('');
+    const tiles = $$('button', grid);
+    const wio = new IntersectionObserver(es => { if (es[0].isIntersecting) { grid.classList.add('in'); wio.disconnect(); } }, { threshold: .12 });
+    wio.observe(grid);
+    if (reduce) return;
+    let visible = false;
+    new IntersectionObserver(es => { visible = es[0].isIntersecting; }).observe(grid);
+    let last = -1;
+    setInterval(() => {
+      if (!visible || !queue.length || document.hidden) return;
+      let t; do { t = Math.floor(Math.random() * tiles.length); } while (t === last || tiles[t].offsetParent === null);
+      last = t;
+      const tile = tiles[t], cur = tile.querySelector('img'), nxt = queue.shift();
+      const k0 = +tile.dataset.open;
+      const im = new Image(); im.className = 'next'; im.alt = ''; im.decoding = 'async'; im.src = nxt.src;
+      im.onload = () => {
+        tile.insertBefore(im, tile.querySelector('.tag'));
+        requestAnimationFrame(() => requestAnimationFrame(() => { im.classList.remove('next'); cur.style.opacity = 0; }));
+        setTimeout(() => { cur.remove(); }, 1200);
+        tile.dataset.open = nxt.k;
+        tile.setAttribute('aria-label', 'เปิดอัลบั้ม' + D.acts[nxt.k].title);
+        tile.querySelector('.tag').textContent = D.acts[nxt.k].tl;
+        queue.push({ src: cur.getAttribute('src'), k: k0 });
+      };
+    }, 2600);
+  })();
+
+  /* gentle parallax for the timeline thumbnails */
+  if (!reduce) {
+    const ths = $$('.e-thumbs');
+    let tick = false;
+    const par = () => { tick = false; const vh = innerHeight; ths.forEach(t => { const r = t.getBoundingClientRect(); if (r.bottom < -100 || r.top > vh + 100) return; const c = (r.top + r.height / 2 - vh / 2) / vh; t.style.setProperty('--py', (c * -36).toFixed(1) + 'px'); }); };
+    addEventListener('scroll', () => { if (!tick) { tick = true; requestAnimationFrame(par); } }, { passive: true }); par();
   }
-  function riverLane(el, lane) {
-    const picks = riverPicks(lane);
-    const make = () => picks.map(([k, id]) => `<button data-open="${k}" data-id="${id}" aria-label="เปิดอัลบั้ม${esc(D.acts[k].title)}"><img data-drive="${id}" alt="" width="400" height="300"></button>`).join('');
-    el.innerHTML = make() + make();
-  }
-  riverLane($('#lane1'), 0); riverLane($('#lane2'), 1);
-  $$('.track img').forEach(img => driveImg(img, img.dataset.drive, 400, null, () => { img.closest('button').style.display = 'none'; }));
 
   /* ---------- summary cards ---------- */
   const cardNames = ['ปก', ...D.acts.map(a => a.n + ' ' + a.tl), 'ขอบคุณผู้ปกครอง'];

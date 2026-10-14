@@ -15,14 +15,16 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Prompt:wght@400;500;600;700;800&family=Sarabun:wght@300;400;500;600&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="style.css?v=3">
+<link rel="icon" type="image/png" href="favicon.png">
+<link rel="apple-touch-icon" href="img/logo.png">
+<link rel="stylesheet" href="style.css?v=4">
 </head>
 <body>
 
 <a class="skip" href="#timeline">ข้ามไปที่ไทม์ไลน์กิจกรรม</a>
 
 <header class="topbar" id="topbar">
-  <a class="brand" href="#top"><b>ม.5/4</b><span>พรตพิทยพยัต</span></a>
+  <a class="brand" href="#top"><img src="img/logo-sm.png" alt="" width="30" height="37"><b>ม.5/4</b><span>พรตพิทยพยัต</span></a>
   <nav class="nav" id="nav" aria-label="เมนูหลัก">
     <a href="#letter">ถึงผู้ปกครอง</a>
     <a href="#timeline">ไทม์ไลน์</a>
@@ -42,6 +44,7 @@
   </div>
   <div class="hero-shade" aria-hidden="true"></div>
   <div class="hero-in">
+    <img class="hero-logo" src="img/logo.png" alt="ตราโรงเรียนพรตพิทยพยัต" width="240" height="293">
     <p class="hero-kick" data-words>บันทึกหนึ่งภาคเรียนของเรา</p>
     <h1 class="mega" id="mega" aria-label="ม.5/4"><span>ม</span><span>.</span><span>5</span><span>/</span><span>4</span></h1>
     <p class="hero-sub" data-words>ภาคเรียนที่ 1 ปีการศึกษา 2569</p>
@@ -85,8 +88,8 @@
 <!-- PHOTO RIVER -->
 <section class="river" id="river" aria-label="ภาพบางส่วนจากทุกอัลบั้ม">
   <h2 class="river-title" data-words>อีกหลายพันช่วงเวลาที่ถูกบันทึกไว้</h2>
-  <div class="lane" data-dir="l"><div class="track" id="lane1"></div></div>
-  <div class="lane" data-dir="r"><div class="track" id="lane2"></div></div>
+  <p class="river-lead" data-reveal>ภาพเปลี่ยนไปเรื่อย ๆ จากทุกกิจกรรม กดที่ภาพเพื่อเปิดอัลบั้มนั้น</p>
+  <div class="wall-grid" id="wallGrid"></div>
 </section>
 
 <!-- ALBUMS -->
@@ -137,6 +140,7 @@
 </main>
 
 <footer class="foot">
+  <img class="foot-logo" src="img/logo-sm.png" alt="ตราโรงเรียนพรตพิทยพยัต" width="64" height="78" loading="lazy">
   <p><b>ชั้นมัธยมศึกษาปีที่ 5/4 โรงเรียนพรตพิทยพยัต</b></p>
   <p>4 ถนนหลวงพรต แขวงลาดกระบัง เขตลาดกระบัง กรุงเทพมหานคร 10520</p>
   <p class="fine">ภาพทั้งหมดจัดทำเพื่อการประชาสัมพันธ์กิจกรรมแก่ผู้ปกครองนักเรียน ม.5/4 ขอความร่วมมือไม่นำไปใช้ในทางที่ไม่เหมาะสม</p>
@@ -177,7 +181,7 @@
   </div>
 </dialog>
 
-<script src="data.js?v=3"></script>
-<script src="app.js?v=3"></script>
+<script src="data.js?v=4"></script>
+<script src="app.js?v=4"></script>
 </body>
 </html>
