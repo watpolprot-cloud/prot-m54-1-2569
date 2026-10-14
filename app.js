@@ -118,7 +118,7 @@
       const p = a.photos; const step = Math.max(1, Math.floor(p.length / 3));
       for (let j = 0; j < 3 && j * step + offset < p.length; j++) picks.push([k, p[(j * step + offset * 7) % p.length]]);
     });
-    const make = () => picks.map(([k, id]) => `<button data-open="${k}" data-id="${id}" aria-label="เปิดอัลบั้ม${esc(D.acts[k].title)}"><img data-drive="${id}" alt="" loading="lazy"></button>`).join('');
+    const make = () => picks.map(([k, id]) => `<button data-open="${k}" data-id="${id}" aria-label="เปิดอัลบั้ม${esc(D.acts[k].title)}"><img data-drive="${id}" alt="" width="400" height="300"></button>`).join('');
     el.innerHTML = make() + make();
   }
   riverLane($('#lane1'), 1); riverLane($('#lane2'), 2);
@@ -192,7 +192,7 @@
     for (let i = shown; i < end; i++) {
       const id = a.photos[i];
       const b = document.createElement('button'); b.dataset.idx = i; b.setAttribute('aria-label', `ภาพที่ ${i + 1}`);
-      const img = document.createElement('img'); img.alt = ''; img.loading = 'lazy'; img.decoding = 'async';
+      const img = document.createElement('img'); img.alt = ''; img.decoding = 'async';
       b.appendChild(img); frag.appendChild(b);
       driveImg(img, id, 480, null, () => { b.innerHTML = '<span class="fail">โหลดภาพนี้ไม่สำเร็จ กดเพื่อเปิดใน Google Drive</span>'; b.dataset.fail = id; });
     }
